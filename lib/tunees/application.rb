@@ -40,5 +40,38 @@ module Tunees
         execute(camel_cased_method, *args)
       end
     end
+
+    # Application elements
+    %w(
+      airplayDevices
+      browserWindows
+      encoders
+      eqPresets
+      eqWindows
+      playlistWindows
+      sources
+        audioCDPlaylists
+          audioCDTracks
+        libraryPlaylists
+          fileTracks
+          urlTracks
+          sharedTracks
+        playlists
+          tracks
+            artworks
+        radioTunerPlaylists
+          urlTracks
+        userPlaylists
+          fileTracks
+          urlTracks
+          sharedTracks
+      visuals
+      windows
+    ).uniq.each do |camel_cased_element|
+      method = camel_cased_element.underscore
+      define_singleton_method(method) do
+        execute(camel_cased_element)
+      end
+    end
   end
 end
