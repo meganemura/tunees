@@ -1,2 +1,2 @@
-require "tunees/commander"
+require "tunees/application"
 require "tunees/version"
