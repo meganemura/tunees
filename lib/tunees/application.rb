@@ -8,7 +8,7 @@ module Tunees
     def self.execute(method, *args)
       Commander.run <<-JXA.strip_heredoc
         var app = Application("iTunes")
-        app.#{method}()
+        app.#{method}(#{args.join(",")})
       JXA
     end
 
