@@ -82,42 +82,44 @@ module Tunees
     end
 
     # Application properties
-    %w(
-      airplayEnabled
-      converting
-      currentAirPlayDevices
-      currentEncoder
-      currentEQPreset
-      currentPlaylist
-      currentStreamTitle
-      currentStreamURL
-      currentTrack
-      currentVisual
-      eqEnabled
-      fixedIndexing
-      frontmost
-      fullScreen
-      name
-      mute
-      playerPosition
-      playerState
-      selection
-      soundVolume
-      version
-      visualsEnabled
-      visualSize
-      iadIdentifier
-    ).uniq.each do |camel_cased_property|
-      method = camel_cased_property.underscore
+    [
+      [:airplayEnabled,        false],
+      [:converting,            false],
+      [:currentAirPlayDevices, true],
+      [:currentEncoder,        true],
+      [:currentEQPreset,       true],
+      [:currentPlaylist,       false],
+      [:currentStreamTitle,    false],
+      [:currentStreamURL,      false],
+      [:currentTrack,          false],
+      [:currentVisual,         true],
+      [:eqEnabled,             true],
+      [:fixedIndexing,         true],
+      [:frontmost,             true],
+      [:fullScreen,            true],
+      [:name,                  false],
+      [:mute,                  true],
+      [:playerPosition,        true],
+      [:playerState,           false],
+      [:selection,             false],
+      [:soundVolume,           true],
+      [:version,               false],
+      [:visualsEnabled,        true],
+      [:visualSize,            true],
+      [:iadIdentifier,         false],
+    ].each do |camel_cased_property, writable|
+      method = camel_cased_property.to_s.underscore
 
       # reader
       define_singleton_method(method) do
-        execute(camel_cased_property)
+        execute(camel_cased_property.to_s)
       end
 
       # writer
-      define_singleton_method("#{method}=") do |value|
-        set_property(camel_cased_property, value)
+      if writable
+        define_singleton_method("#{method}=") do |value|
+          set_property(camel_cased_property.to_s, value)
+        end
       end
     end
   end
