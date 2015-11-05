@@ -8,7 +8,18 @@ module Tunees
     def self.execute(method, *args)
       Commander.run <<-JXA.strip_heredoc
         var app = Application("iTunes")
-        return app.#{method}(#{args.join(",")})
+        var ret = app.#{method}(#{args.join(",")})
+
+        // TODO: make this recursively
+        if (Array.isArray(ret)) {
+          return ret.map(function(x) { return x.properties() })
+        } else if (typeof ret == 'object') {
+          return ret.properties()
+        } else if (typeof ret == 'function') {
+          return ret.properties()
+        } else {
+          return ret
+        }
       JXA
     end
 
