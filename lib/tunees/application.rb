@@ -5,10 +5,10 @@ require 'tunees/commander'
 module Tunees
   module Application
 
-    def self.execute(method, *args)
+    def self._execute(script)
       Commander.run <<-JXA.strip_heredoc
         var app = Application("iTunes")
-        var ret = app.#{method}(#{args.join(",")})
+        #{script}
 
         // TODO: make this recursively
         if (Array.isArray(ret)) {
@@ -20,6 +20,12 @@ module Tunees
         } else {
           return ret
         }
+      JXA
+    end
+
+    def self.execute(method, *args)
+      _execute(<<-JXA.strip_heredoc)
+        var ret = app.#{method}(#{args.join(",")})
       JXA
     end
 
@@ -37,7 +43,6 @@ module Tunees
       fastForward
       nextTrack
       pause
-      play
       playpause
       previousTrack
       refresh
@@ -58,6 +63,19 @@ module Tunees
         execute(camel_cased_method, *args)
       end
     end
+
+    def self.play(track)
+      case track
+      when Integer
+        id = track
+        _execute(<<-JXA.strip_heredoc)
+          var track = app.tracks.byId(#{id});
+          var ret = app.play(track);
+          return
+        JXA
+      end
+    end
+
 
     # Application elements
     %w(
